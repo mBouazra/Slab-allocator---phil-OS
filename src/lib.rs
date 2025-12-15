@@ -1,6 +1,6 @@
 //! Slab Allocator Implementation
 //! 
-//! Authors: TON_NOM, NOM_BINOME
+//! Authors: BOUAZRA MEHDI && MALIH OMAR
 
 #![no_std]
 
