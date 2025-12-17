@@ -14,3 +14,6 @@ pub mod utils;
 
 pub use slab::Slab;
 pub use allocator::SlabAllocator;
+
+#[cfg(test)]
+mod tests;

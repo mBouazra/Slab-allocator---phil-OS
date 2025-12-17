@@ -1,4 +1,5 @@
-use slab_allocator::Slab;
+
+use crate::slab::Slab;
 
     #[test]
     fn test_slab_alloc() {
