@@ -8,10 +8,28 @@ pub struct Slab {
 }
 
 impl Slab {
-    pub fn new(memory: *mut u8, object_size: usize, capacity: usize) -> Self {
-     
-        todo!()
-    }
+    
+pub fn new(memory: *mut u8, object_size: usize, capacity: usize) -> Self {
+        let mut free_list = FreeList::new();
+
+        // Découpage de la mémoire en objets
+        for i in 0..capacity {
+            let ptr = unsafe {
+                memory.add(i * object_size)
+            };
+            free_list.push(ptr);
+        }
+
+        Slab {
+            memory,
+            free_list,
+            object_size,
+            capacity,
+        }
+
+
+
+   }
 
  pub fn alloc(&mut self) -> *mut u8 {
   self.free_list.pop() 
