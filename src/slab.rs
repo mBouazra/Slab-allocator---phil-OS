@@ -1,37 +1,28 @@
+use core::ptr::null_mut;
 use crate::free_list::FreeList;
 
 pub struct Slab {
-    memory: *mut u8,
-    free_list: FreeList,
     object_size: usize,
-    capacity: usize,
+    free_list: FreeList,
 }
 
 impl Slab {
-    pub fn new(memory: *mut u8, object_size: usize, capacity: usize) -> Self {
-        let mut free_list = FreeList::new();
-
-        // Découpe de la mémoire en objets fixes
-        for i in 0..capacity {
-            let ptr = unsafe {
-                memory.add(i * object_size)
-            };
-            free_list.push(ptr);
-        }
-
+    pub const fn new(object_size: usize) -> Self {
         Slab {
-            memory,
-            free_list,
             object_size,
-            capacity,
+            free_list: FreeList::new(),
         }
     }
 
-    pub fn alloc(&mut self) -> *mut u8 {
-        self.free_list.pop()
+    pub unsafe fn alloc(&mut self) -> *mut u8 {
+        self.free_list.pop().unwrap_or(null_mut())
     }
 
-    pub fn free(&mut self, ptr: *mut u8) {
-        self.free_list.push(ptr)
+    pub unsafe fn free(&mut self, ptr: *mut u8) {
+        self.free_list.push(ptr);
+    }
+
+    pub fn size(&self) -> usize {
+        self.object_size
     }
 }
