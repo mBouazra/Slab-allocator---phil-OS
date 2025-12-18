@@ -4,25 +4,47 @@ use crate::free_list::FreeList;
 pub struct Slab {
     object_size: usize,
     free_list: FreeList,
+     base: *mut u8,
+    capacity: usize,
 }
 
 impl Slab {
-    pub const fn new(object_size: usize) -> Self {
+    pub const fn empty(object_size: usize) -> Self {
         Slab {
             object_size,
             free_list: FreeList::new(),
+            base: null_mut(),
+            capacity: 0,
         }
     }
 
+  pub unsafe fn new(base: *mut u8, object_size: usize, count: usize) -> Self {
+        let mut slab = Slab {
+            object_size,
+            free_list: FreeList::new(),
+            base,
+            capacity: count,
+        };
+        for i in 0..count {
+            let ptr = base.add(i * object_size);
+            slab.free_list.push(ptr);
+        }
+        slab
+    }
+   
     pub unsafe fn alloc(&mut self) -> *mut u8 {
         self.free_list.pop().unwrap_or(null_mut())
     }
 
     pub unsafe fn free(&mut self, ptr: *mut u8) {
-        self.free_list.push(ptr);
+        if !ptr.is_null() {
+            self.free_list.push(ptr);
+        }
     }
 
-    pub fn size(&self) -> usize {
+    pub fn object_size(&self) -> usize {
         self.object_size
     }
 }
+
+unsafe impl Send for Slab {}
