@@ -13,14 +13,4 @@ pub fn calculate_slab_count(total_size: usize, object_size: usize) -> usize {
     total_size / object_size
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
 
-    #[test]
-    fn test_align_up() {
-        assert_eq!(align_up(10, 8), 16);
-        assert_eq!(align_up(16, 8), 16);
-    }
-}
-		

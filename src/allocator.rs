@@ -4,22 +4,23 @@ use spin::Mutex;
 
 use crate::slab::Slab;
 
-pub struct SlabAllocator {   slab_32: Mutex<Slab>,  
-    slab_64: Mutex<Slab>,   slab_128: Mutex<Slab>,
+pub struct SlabAllocator {
+    slab_32: Mutex<Slab>,
+    slab_64: Mutex<Slab>,
+    slab_128: Mutex<Slab>,
 }
 
 impl SlabAllocator {
     pub const fn new() -> Self {
         SlabAllocator {
-            slab_32: Mutex::new(Slab::new(32)),  
-            slab_64: Mutex::new(Slab::new(64)),    
-            slab_128: Mutex::new(Slab::new(128)),
+            slab_32: Mutex::new(Slab::empty(32)),
+            slab_64: Mutex::new(Slab::empty(64)),
+            slab_128: Mutex::new(Slab::empty(128)),
         }
     }
-}
 
-
-pub unsafe fn init(&self, heap_start: *mut u8, heap_size: usize) {
+   
+    pub unsafe fn init(&self, heap_start: *mut u8, heap_size: usize) {
         let region = heap_size / 3;
 
         let count_32 = region / 32;
@@ -35,12 +36,13 @@ pub unsafe fn init(&self, heap_start: *mut u8, heap_size: usize) {
 
         *self.slab_128.lock() = Slab::new(heap_start.add(offset), 128, count_128);
     }
+}
 
 
 unsafe impl GlobalAlloc for SlabAllocator {
     unsafe fn alloc(&self, layout: Layout) -> *mut u8 {
         let size = layout.size().max(layout.align());
-        match layout.size() {
+        match size {
             0..=32 => self.slab_32.lock().alloc(),
             33..=64 => self.slab_64.lock().alloc(),
             65..=128 => self.slab_128.lock().alloc(),
@@ -50,7 +52,7 @@ unsafe impl GlobalAlloc for SlabAllocator {
 
     unsafe fn dealloc(&self, ptr: *mut u8, layout: Layout) {
         let size = layout.size().max(layout.align());
-        match layout.size() {
+        match size {
             0..=32 => self.slab_32.lock().free(ptr),
             33..=64 => self.slab_64.lock().free(ptr),
             65..=128 => self.slab_128.lock().free(ptr),
