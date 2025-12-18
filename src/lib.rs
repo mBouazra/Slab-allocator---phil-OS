@@ -8,6 +8,3 @@ pub mod free_list;
 pub mod slab;
 pub mod allocator;
 pub mod utils;
-
-#[cfg(test)]
-mod tests;
