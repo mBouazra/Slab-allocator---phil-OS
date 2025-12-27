@@ -1,3 +1,4 @@
+
 use core::ptr::null_mut;
 use crate::free_list::FreeList;
 
@@ -18,9 +19,7 @@ impl Slab {
         }
     }
 
-    /// # Safety
-    /// - `base` must point to valid memory of `object_size * count` bytes
-    /// - `object_size` must be >= `size_of::<*mut u8>()`
+
     pub unsafe fn new(base: *mut u8, object_size: usize, count: usize) -> Self {
         let mut slab = Slab {
             object_size,
@@ -35,14 +34,12 @@ impl Slab {
         slab
     }
 
-    /// # Safety
-    /// - Returned pointer valid until freed
+
     pub unsafe fn alloc(&mut self) -> *mut u8 {
         self.free_list.pop().unwrap_or(null_mut())
     }
 
-    /// # Safety
-    /// - `ptr` must come from `alloc()` on this slab
+
     pub unsafe fn free(&mut self, ptr: *mut u8) {
         if !ptr.is_null() {
             self.free_list.push(ptr);

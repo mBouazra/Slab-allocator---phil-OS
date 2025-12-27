@@ -1,16 +1,10 @@
-
-//SOURCE:
-//-Phil Opp's OS tutorial
-//-Linux SLUB allocator design
-
-
-
 use core::alloc::{GlobalAlloc, Layout};
 use core::ptr::null_mut;
 use spin::Mutex;
 
 use crate::slab::Slab;
 
+/// A slab-based memory allocator with multiple size classes.
 pub struct SlabAllocator {
     slab_32: Mutex<Slab>,
     slab_64: Mutex<Slab>,
@@ -26,7 +20,7 @@ impl SlabAllocator {
         }
     }
 
-   
+
     pub unsafe fn init(&self, heap_start: *mut u8, heap_size: usize) {
         let region = heap_size / 3;
 
