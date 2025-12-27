@@ -27,14 +27,8 @@ cargo build --target x86_64-unknown-none
 
 ## Project Structure
 
-src/
-├── lib.rs          # Library root (no_std)
-├── main.rs         # Kernel entry point
-├── free_list.rs    # Free list implementation
-├── slab.rs         # Slab structure
-├── allocator.rs    # Global allocator
-├── utils.rs        # Utility functions
-└── tests.rs        # Unit tests (13 tests)
+<img width="528" height="179" alt="image" src="https://github.com/user-attachments/assets/337d54b7-ec61-4371-a6dd-7c54903299ad" />
+
 
 
 ## Features
