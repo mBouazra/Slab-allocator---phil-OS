@@ -1,3 +1,7 @@
+//! # Tests Unitaires
+//! Tests pour vérifier le bon fonctionnement de l'allocateur slab.
+
+
 use crate::slab::Slab;
 use crate::free_list::FreeList;
 use crate::utils::{align_up, is_aligned, calculate_slab_count};
