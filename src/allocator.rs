@@ -1,3 +1,10 @@
+
+//SOURCE:
+//-Phil Opp's OS tutorial
+//-Linux SLUB allocator design
+
+
+
 use core::alloc::{GlobalAlloc, Layout};
 use core::ptr::null_mut;
 use spin::Mutex;
@@ -60,3 +67,4 @@ unsafe impl GlobalAlloc for SlabAllocator {
         }
     }
 }
+
